@@ -12,6 +12,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -28,6 +29,65 @@ public class Peaklass extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+
+
+        BorderPane juur = new BorderPane();
+        VBox vbox = new VBox();
+        vbox.setAlignment(Pos.CENTER);
+        vbox.setSpacing(20);
+
+        Label tuluSilt = new Label("Sisesta oma selle kuu tulu (€):");
+        TextField tekst = new TextField();
+        Button edasiNupp = new Button("Edasi");
+
+        vbox.getChildren().addAll(tuluSilt,tekst,edasiNupp);
+
+
+       edasiNupp.setOnAction(event -> {
+            String tuluTekst = tekst.getText();
+            try {
+                tulu = Double.parseDouble(tuluTekst);
+                if(tulu < 0.0) throw new NumberFormatException();
+                planeeriSäästmine(primaryStage);
+           } catch (NumberFormatException e) {
+                tekst.clear();
+                //äkki mingi muu erind,veel ei tea:/
+
+            }
+
+        });
+
+        juur.setCenter(vbox);
+
+        Scene stseen = new Scene(juur, 400, 400);
+        primaryStage.setScene(stseen);
+        primaryStage.show();
+    }
+    public void planeeriSäästmine(Stage primaryStage){
+        BorderPane juur = new BorderPane();
+        VBox vbox = new VBox();
+        vbox.setAlignment(Pos.CENTER);
+        vbox.setSpacing(20);
+
+        Label säästmineSilt = new Label("Kui soovid sellel kuul säästa, siis sisesta summa või loosi juhuslik säästusumma");
+        TextField säästmineTekst = new TextField();
+        Button juhuslikSummaNupp = new Button("juhuslik");
+        Button edasiNupp = new Button("Edasi");
+
+        vbox.getChildren().addAll(säästmineSilt,säästmineTekst,juhuslikSummaNupp,edasiNupp);
+
+        juhuslikSummaNupp.setOnAction(event -> {
+            Saastmine säästmine = new Saastmine(tulu);
+            säästmineTekst.setText(String.valueOf(säästmine.säästa()));
+        });
+
+      edasiNupp.setOnAction(event -> { planeeriEelarved(primaryStage);});
+
+        juur.setCenter(vbox);
+        Scene stseen = new Scene(juur, 400, 400);
+        primaryStage.setScene(stseen);
+    }
+    private void planeeriEelarved(Stage primaryStage) {
         //kulude isendid iga valdkonna eelarve jaoks
         Kulud üür = new Kulud("üür");
         Kulud kommunaalkulud = new Kulud("kommunaalkulud");
@@ -41,39 +101,12 @@ public class Peaklass extends Application {
         Kulud säästud = new Kulud("säästud");
         kulutused = new ArrayList<>(Arrays.asList(üür, kommunaalkulud, söök, transport, meelelahutus, riided_ja_jalatsid, ilu_ja_tervis, muu));
 
-        BorderPane juur = new BorderPane();
-        VBox vbox = new VBox();
-        vbox.setAlignment(Pos.CENTER);
-        vbox.setSpacing(20);
-
-        Label tuluSilt = new Label("Sisesta oma selle kuu tulu:");
-        TextField tekst = new TextField();
-        Button edasiNupp = new Button("Edasi");
-        vbox.getChildren().addAll(tuluSilt,tekst,edasiNupp);
-
-       edasiNupp.setOnAction(event -> {
-            String tuluTekst = tekst.getText();
-            try {
-                tulu = Double.parseDouble(tuluTekst);
-                planeeriEelarved(primaryStage);
-            } catch (NumberFormatException e) { //äkki mingi muu erind,veel ei tea:/
-
-            }
-        });
-
-        juur.setCenter(vbox);
-
-        Scene stseen = new Scene(juur, 400, 400);
-        primaryStage.setScene(stseen);
-        primaryStage.show();
-    }
-    private void planeeriEelarved(Stage primaryStage) {
-
         GridPane juur = new GridPane();
         juur.setAlignment(Pos.CENTER);
         juur.setHgap(10);
         juur.setVgap(10);
         juur.setPadding(new Insets(10, 10, 10, 10));
+
 
         Label üürSilt = new Label("Üür:");
         TextField üürTekst = new TextField();
@@ -92,8 +125,8 @@ public class Peaklass extends Application {
         Label muuSilt = new Label("ilu/tervis:");
         TextField muuTekst = new TextField();
         Button kinnitaNupp = new Button("Kinnita");
+        List<TextField> tekstid = new ArrayList<>(Arrays.asList(üürTekst,kommunaalkuludTekst,söökTekst,transportTekst,meelelahutusTekst,riided_jalatsidTekst,ilu_tervisTekst,muuTekst));
 
-        kinnitaNupp.setOnAction(event -> { /*mingi meetod vms, mis võtab tekstist summa*/ });
 
         juur.add(üürSilt, 0, 0);
         juur.add(üürTekst, 1, 0);
@@ -114,7 +147,29 @@ public class Peaklass extends Application {
         juur.add(kinnitaNupp, 0, 8,2,1);
         GridPane.setHalignment(kinnitaNupp, HPos.CENTER);
 
+        kinnitaNupp.setOnAction(event -> {
+            int i= 0;
+            double eelarvedKokku = 0;
+            try{
+                for (Kulud kulu: kulutused) {
+                    double eelarveSumma = kulu.lisaEelarve(tekstid.get(i));
+                    eelarvedKokku += eelarveSumma;
+                    i++;
+                }
+
+            kokku.lisaKokkuEelarve(eelarvedKokku,tulu);
+
+            }catch (eelarvedÜletavadTuluErind e){
+
+
+            }
+            // uus meetod mis viib järgmisesse aknasse
+
+        });
+
         Scene scene = new Scene(juur, 400, 400);
         primaryStage.setScene(scene);
     }
+
+
 }

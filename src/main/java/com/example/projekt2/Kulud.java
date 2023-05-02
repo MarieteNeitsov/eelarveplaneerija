@@ -1,5 +1,7 @@
 package com.example.projekt2;
 
+import javafx.scene.control.TextField;
+
 public class Kulud {
 
     private double[] kategooria;
@@ -18,7 +20,24 @@ public class Kulud {
         return nimetus;
     }
 
-    public double lisaEelarve(double summa) {
+    public double lisaEelarve(TextField tekstikast) {
+        String tekst = tekstikast.getText();
+        if (tekst.isEmpty()) {
+            kategooria[0] = 0;
+        } else {
+            try {
+                double summa =  Double.parseDouble(tekst);
+                if(summa < 0.0) throw new NumberFormatException();
+                kategooria[0] = summa;
+            } catch (NumberFormatException e) {
+                // vaja midagi välja mõelda
+            }
+        }
+        return kategooria[0];
+    }
+
+    public double lisaKokkuEelarve(double summa,double tulu) throws eelarvedÜletavadTuluErind{
+        if(summa > tulu) throw new eelarvedÜletavadTuluErind("Sinu planeeritud eelarved ületavad tulu " + (summa - tulu) +" euro võrra");
         kategooria[0] = summa;
         return kategooria[0];
     }
