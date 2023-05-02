@@ -21,6 +21,7 @@ public class Kulud {
     }
 
     public double lisaEelarve(TextField tekstikast) {
+        // vb oleks parem kui olekd mingi üldisem meetod kasutaja sisestuse kontrollimiseks, sest kulutustel tuleks see sama läbi teha
         String tekst = tekstikast.getText();
         if (tekst.isEmpty()) {
             kategooria[0] = 0;

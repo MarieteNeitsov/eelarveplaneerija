@@ -22,6 +22,7 @@ import java.util.List;
 public class Peaklass extends Application {
     static double tulu;
     static List<Kulud> kulutused;
+    static double säästud;
 
     public static void main(String[] args) {
         launch(args);
@@ -79,9 +80,12 @@ public class Peaklass extends Application {
         juhuslikSummaNupp.setOnAction(event -> {
             Saastmine säästmine = new Saastmine(tulu);
             säästmineTekst.setText(String.valueOf(säästmine.säästa()));
+
+            säästud = Double.parseDouble(säästmineTekst.getText());
+
         });
 
-      edasiNupp.setOnAction(event -> { planeeriEelarved(primaryStage);});
+         edasiNupp.setOnAction(event -> planeeriEelarved(primaryStage));
 
         juur.setCenter(vbox);
         Scene stseen = new Scene(juur, 400, 400);
@@ -98,7 +102,6 @@ public class Peaklass extends Application {
         Kulud ilu_ja_tervis = new Kulud("ilu/tervis");
         Kulud muu = new Kulud("muu");
         Kulud kokku = new Kulud("kokku");
-        Kulud säästud = new Kulud("säästud");
         kulutused = new ArrayList<>(Arrays.asList(üür, kommunaalkulud, söök, transport, meelelahutus, riided_ja_jalatsid, ilu_ja_tervis, muu));
 
         GridPane juur = new GridPane();
@@ -157,10 +160,14 @@ public class Peaklass extends Application {
                     i++;
                 }
 
-            kokku.lisaKokkuEelarve(eelarvedKokku,tulu);
+            kokku.lisaKokkuEelarve(eelarvedKokku,tulu-säästud);
 
             }catch (eelarvedÜletavadTuluErind e){
-
+                Alert veahoiatus = new Alert(Alert.AlertType.ERROR);
+                veahoiatus.setHeaderText(null);
+                veahoiatus.setTitle("");
+                veahoiatus.setContentText(e.getMessage());
+                veahoiatus.showAndWait();
 
             }
             // uus meetod mis viib järgmisesse aknasse
@@ -170,6 +177,7 @@ public class Peaklass extends Application {
         Scene scene = new Scene(juur, 400, 400);
         primaryStage.setScene(scene);
     }
+
 
 
 }
