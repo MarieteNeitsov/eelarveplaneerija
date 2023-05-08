@@ -37,8 +37,8 @@ public class Kulud {
         return kategooria[0];
     }
 
-    public double lisaKokkuEelarve(double summa,double tulu) throws eelarvedÜletavadTuluErind{
-        if(summa > tulu) throw new eelarvedÜletavadTuluErind("Sinu planeeritud eelarved ületavad tulu " + (summa - tulu) +" euro võrra");
+    public double lisaKokkuEelarve(double summa,double tulu) throws EelarvedÜletavadTuluErind{
+        if(summa > tulu) throw new EelarvedÜletavadTuluErind("Sinu planeeritud eelarved ületavad tulu " + (summa - tulu) +" euro võrra");
         kategooria[0] = summa;
         return kategooria[0];
     }

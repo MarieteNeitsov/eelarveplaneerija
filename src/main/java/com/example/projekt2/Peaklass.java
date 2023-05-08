@@ -5,10 +5,7 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
@@ -172,17 +169,82 @@ public class Peaklass extends Application {
                     i++;
                 }
                 kokku.lisaKokkuEelarve(eelarvedKokku, tulu - säästud);
-            } catch (eelarvedÜletavadTuluErind e) {
+                double vahe = tulu - säästud - eelarvedKokku;
+                if (vahe > 0)
+                    throw new EelarvetestJäiÜleErind("Sul jäi eelarvetest üle " + vahe + " eurot, summa lisatud säästudesse");
+                else if (vahe == 0)
+                    throw new KõikJagatudErind("Kogu sissetulek edukalt eelarvete vahel ära jaotatud");
+            } catch (EelarvedÜletavadTuluErind e) {
                 Alert veahoiatus = new Alert(Alert.AlertType.ERROR);
                 veahoiatus.setHeaderText(null);
                 veahoiatus.setTitle("");
                 veahoiatus.setContentText(e.getMessage());
                 veahoiatus.showAndWait();
+            } catch (EelarvetestJäiÜleErind | KõikJagatudErind e) {
+                Alert info = new Alert(Alert.AlertType.INFORMATION);
+                info.setHeaderText(null);
+                info.setTitle("");
+                info.setContentText(e.getMessage());
+                info.showAndWait();
+                valiTegevus(primaryStage);
             }
             // uus meetod mis viib järgmisesse aknasse
         });
 
         Scene scene = new Scene(juur, 400, 400);
         primaryStage.setScene(scene);
+    }
+
+    private void valiTegevus(Stage primaryStage) {
+        BorderPane juur = new BorderPane();
+        VBox vBox = new VBox();
+        vBox.setAlignment(Pos.CENTER);
+        vBox.setSpacing(20);
+
+        Label tegevusSilt = new Label("Vali tegevus:");
+        Button kulutus = new Button("Lisa kulutus");
+        Button ülevaade = new Button("Vaata ülevaadet");
+        Button lõpeta = new Button("Lõpeta");
+
+        HBox nupud = new HBox(kulutus, ülevaade, lõpeta);
+        nupud.setAlignment(Pos.CENTER);
+        nupud.setSpacing(10);
+
+        vBox.getChildren().addAll(tegevusSilt, nupud);
+
+        juur.setCenter(vBox);
+        Scene stseen = new Scene(juur, 400, 300);
+        primaryStage.setScene(stseen);
+
+        kulutus.setOnAction(event -> valiValdkond(primaryStage));
+//        ülevaade.setOnAction(event -> vaataÜlevaadet(primaryStage));
+//        lõpeta.setOnAction(event -> lõpetaTöö(primaryStage));
+    }
+
+    private void valiValdkond(Stage primaryStage) {
+        BorderPane juur = new BorderPane();
+        VBox vBox = new VBox();
+        vBox.setAlignment(Pos.CENTER);
+        vBox.setSpacing(20);
+
+        Label valdkondSilt = new Label("Vali valdkond:");
+        Button üür = new Button("üür");
+        Button kommunaalkulud = new Button("kommunaalkulud");
+        Button söök = new Button("söök");
+        Button transport = new Button("transport");
+        Button meelelahutus = new Button("meelelahutus");
+        Button riided_ja_jalatsid = new Button("riided/jalatsid");
+        Button ilu_ja_tervis = new Button("ilu/tervis");
+        Button muu = new Button("muu");
+
+        HBox nupud = new HBox(üür,kommunaalkulud,söök,transport, meelelahutus, riided_ja_jalatsid, ilu_ja_tervis, muu);
+        nupud.setAlignment(Pos.CENTER);
+        nupud.setSpacing(10);
+
+        vBox.getChildren().addAll(valdkondSilt, nupud);
+
+        juur.setCenter(vBox);
+        Scene stseen = new Scene(juur, 700, 300);
+        primaryStage.setScene(stseen);
     }
 }
