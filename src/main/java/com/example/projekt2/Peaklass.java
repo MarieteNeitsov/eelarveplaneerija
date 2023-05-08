@@ -6,6 +6,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
@@ -217,7 +218,7 @@ public class Peaklass extends Application {
         primaryStage.setScene(stseen);
 
         kulutus.setOnAction(event -> valiValdkond(primaryStage));
-//        ülevaade.setOnAction(event -> vaataÜlevaadet(primaryStage));
+        ülevaade.setOnAction(event -> vaataÜlevaadet(primaryStage));
 //        lõpeta.setOnAction(event -> lõpetaTöö(primaryStage));
     }
 
@@ -246,5 +247,76 @@ public class Peaklass extends Application {
         juur.setCenter(vBox);
         Scene stseen = new Scene(juur, 700, 300);
         primaryStage.setScene(stseen);
+
+        üür.setOnAction(event -> lisaKulu(primaryStage, kulutused.get(0)));
+        kommunaalkulud.setOnAction(event -> lisaKulu(primaryStage, kulutused.get(1)));
+        söök.setOnAction(event -> lisaKulu(primaryStage, kulutused.get(2)));
+        transport.setOnAction(event -> lisaKulu(primaryStage, kulutused.get(3)));
+        meelelahutus.setOnAction(event -> lisaKulu(primaryStage, kulutused.get(4)));
+        riided_ja_jalatsid.setOnAction(event -> lisaKulu(primaryStage, kulutused.get(5)));
+        ilu_ja_tervis.setOnAction(event -> lisaKulu(primaryStage, kulutused.get(6)));
+        muu.setOnAction(event -> lisaKulu(primaryStage, kulutused.get(7)));
+    }
+
+    private void lisaKulu(Stage primaryStage, Kulud valdkond) {
+        BorderPane juur = new BorderPane();
+        VBox vBox = new VBox();
+        vBox.setAlignment(Pos.CENTER);
+        vBox.setSpacing(20);
+
+        HBox hBox = new HBox();
+        hBox.setAlignment(Pos.CENTER);
+        hBox.setPadding(new Insets(10));
+
+        Label kuluSilt = new Label("Sisesta summa, mis selles valdkonnas kulutasid:");
+        TextField kuluTekst = new TextField();
+        kuluTekst.setPrefWidth(380);
+        Button edasiNupp = new Button("Edasi");
+
+        vBox.getChildren().addAll(kuluSilt, kuluTekst, edasiNupp);
+        hBox.getChildren().add(vBox);
+        HBox.setHgrow(kuluTekst, Priority.ALWAYS);
+
+        juur.setCenter(hBox);
+        Scene stseen = new Scene(juur, 400, 300);
+        primaryStage.setScene(stseen);
+
+        edasiNupp.setOnAction(event -> {
+            valdkond.lisaKulu(Double.parseDouble(kuluTekst.getText()));
+            Alert info = new Alert(Alert.AlertType.INFORMATION);
+            info.setHeaderText(null);
+            info.setTitle("");
+            info.setContentText("Summa valdkonna " + "\"" + valdkond.getNimetus() + "\"" + " kuludesse lisatud");
+            info.showAndWait();
+            valiTegevus(primaryStage);
+        });
+    }
+
+    private void vaataÜlevaadet(Stage primaryStage) {
+        VBox juur = new VBox();
+        TableView<Kulud> tableView = new TableView<>();
+
+        TableColumn<Kulud, String> valdkonnad = new TableColumn<>();
+        TableColumn<Kulud, double[]> planeeritud = new TableColumn<>("Planeeritud");
+        TableColumn<Kulud, double[]> tegelik = new TableColumn<>("Tegelik kulu");
+        TableColumn<Kulud, double[]> protsent = new TableColumn<>("Protsent eelarvest");
+
+//        valdkonnad.setCellValueFactory(new PropertyValueFactory<>("nimetus"));
+//        planeeritud.setCellValueFactory(new PropertyValueFactory<>("kategooria[0]"));
+//        tegelik.setCellValueFactory(new PropertyValueFactory<>("kategooria[1]"));
+//        protsent.setCellValueFactory(new PropertyValueFactory<>("kategooria[2]"));
+
+        tableView.getColumns().add(valdkonnad);
+        tableView.getColumns().add(planeeritud);
+        tableView.getColumns().add(tegelik);
+        tableView.getColumns().add(protsent);
+
+//        tableView.getItems().addAll(kulutused.get(0), kulutused.get(1), kulutused.get(2), kulutused.get(3), kulutused.get(4), kulutused.get(5), kulutused.get(6), kulutused.get(7));
+
+        juur.getChildren().add(tableView);
+
+        Scene scene = new Scene(juur, 400, 250);
+        primaryStage.setScene(scene);
+        primaryStage.show();
     }
 }
