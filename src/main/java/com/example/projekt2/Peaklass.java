@@ -67,7 +67,6 @@ public class Peaklass extends Application {
         File fail = fileChooser.showOpenDialog(primaryStage);
 
         if (fail != null) {
-            // tuleb sisse lugeda
             try (DataInputStream dis = new DataInputStream(new FileInputStream(fail.getName()))) {
                 tulu = dis.readDouble();
                 säästusumma = dis.readDouble();
@@ -110,13 +109,11 @@ public class Peaklass extends Application {
             try {
                 tulu = Double.parseDouble(tuluTekst);
                 if (tulu < 0.0) throw new NumberFormatException();
-
+                planeeriSäästmine(primaryStage);
             } catch (NumberFormatException e) {
                 tekst.clear();
-                //äkki mingi muu erind,veel ei tea:/
-
             }
-            planeeriSäästmine(primaryStage);
+
         });
 
         juur.setCenter(hBox);
@@ -156,9 +153,18 @@ public class Peaklass extends Application {
             Saastmine säästmine = new Saastmine(tulu);
             säästmineTekst.setText(String.valueOf(säästmine.säästa()));
             säästusumma = Double.parseDouble(säästmineTekst.getText());
+            planeeriEelarved(primaryStage);
         });
 
-        edasiNupp.setOnAction(event -> planeeriEelarved(primaryStage));
+        edasiNupp.setOnAction(event -> {
+            try{
+            säästusumma = Double.parseDouble(säästmineTekst.getText());
+            if (säästusumma < 0) throw new NumberFormatException("negatiivne arv");
+            planeeriEelarved(primaryStage);
+            }
+            catch (NumberFormatException e){
+                säästmineTekst.clear();
+            }} );
 
         juur.setCenter(hBox);
         Scene stseen = new Scene(juur, 400, 300);
@@ -259,7 +265,7 @@ public class Peaklass extends Application {
                 info.showAndWait();
                 valiTegevus(primaryStage);
             }
-            valiTegevus(primaryStage);
+
         });
 
         Scene scene = new Scene(juur, 400, 400);
