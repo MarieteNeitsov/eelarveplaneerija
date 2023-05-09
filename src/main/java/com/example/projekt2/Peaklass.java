@@ -11,9 +11,11 @@ import javafx.scene.layout.*;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import javafx.stage.FileChooser;
 
 public class Peaklass extends Application {
     static double tulu;
@@ -23,9 +25,62 @@ public class Peaklass extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage){
+        VBox juur = new VBox( );
+        juur.setAlignment(Pos.CENTER);
+        juur.setSpacing(20);
+
+        Label silt = new Label("Mingi programmi tutvustav tekst");
+        Button valifailnupp = new Button("Vali DAT fail, et jätkata kulutuste lisamist");
+        valifailnupp.setOnAction(event -> {
+            //pole vist koige parem lahendus, aga teisiti vist ei saa praegu
+            try {
+                valiFail(primaryStage);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+        });
+
+        Button alustaUut = new Button("Alusta uut sessiooni");
+        alustaUut.setOnAction(event -> alustus(primaryStage));
+
+
+        juur.getChildren().addAll(silt,valifailnupp,alustaUut);
+
+        Scene scene = new Scene(juur, 400, 300);
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
+    private void valiFail(Stage primaryStage) throws IOException {
+        List<Kulud> loetudKulud = new ArrayList<>();
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("DAT Files", "*.dat"));
+        File fail = fileChooser.showOpenDialog(primaryStage);
+
+        if (fail != null) {
+            // tuleb sisse lugeda
+            try (DataInputStream dis = new DataInputStream(new FileInputStream(fail.getName()))) {
+                tulu = dis.readDouble();
+                säästud = dis.readDouble();
+                for (int i = 0; i < 10; i++) {
+                    String nimetus = dis.readUTF();
+                    double[] kategooria = new double[3];
+                    kategooria[0] = dis.readDouble();
+                    kategooria[1] = dis.readDouble();
+                    kategooria[2] = dis.readDouble();
+                    Kulud kulu = new Kulud(kategooria,nimetus);
+                    loetudKulud.add(kulu);
+                }
+                kulutused = loetudKulud;
+            }
+
+        }
+    }
+
+    public void alustus(Stage primaryStage) {
         BorderPane juur = new BorderPane();
         VBox vBox = new VBox();
         vBox.setAlignment(Pos.CENTER);
@@ -49,12 +104,13 @@ public class Peaklass extends Application {
             try {
                 tulu = Double.parseDouble(tuluTekst);
                 if (tulu < 0.0) throw new NumberFormatException();
-                planeeriSäästmine(primaryStage);
+
             } catch (NumberFormatException e) {
                 tekst.clear();
                 //äkki mingi muu erind,veel ei tea:/
 
             }
+            planeeriSäästmine(primaryStage);
         });
 
         juur.setCenter(hBox);
@@ -103,7 +159,7 @@ public class Peaklass extends Application {
         primaryStage.setScene(stseen);
     }
 
-    private void planeeriEelarved(Stage primaryStage) {
+    private void planeeriEelarved(Stage primaryStage)  {
         //kulude isendid iga valdkonna eelarve jaoks
         Kulud üür = new Kulud("üür");
         Kulud kommunaalkulud = new Kulud("kommunaalkulud");
@@ -114,7 +170,7 @@ public class Peaklass extends Application {
         Kulud ilu_ja_tervis = new Kulud("ilu/tervis");
         Kulud muu = new Kulud("muu");
         Kulud kokku = new Kulud("kokku");
-        kulutused = new ArrayList<>(Arrays.asList(üür, kommunaalkulud, söök, transport, meelelahutus, riided_ja_jalatsid, ilu_ja_tervis, muu));
+        kulutused = new ArrayList<>(Arrays.asList(üür, kommunaalkulud, söök, transport, meelelahutus, riided_ja_jalatsid, ilu_ja_tervis, muu,kokku));
 
         GridPane juur = new GridPane();
         juur.setAlignment(Pos.CENTER);
@@ -189,14 +245,14 @@ public class Peaklass extends Application {
                 info.showAndWait();
                 valiTegevus(primaryStage);
             }
-            // uus meetod mis viib järgmisesse aknasse
+           valiTegevus(primaryStage);
         });
 
         Scene scene = new Scene(juur, 400, 400);
         primaryStage.setScene(scene);
     }
 
-    private void valiTegevus(Stage primaryStage) {
+    private void valiTegevus(Stage primaryStage){
         BorderPane juur = new BorderPane();
         VBox vBox = new VBox();
         vBox.setAlignment(Pos.CENTER);
@@ -219,7 +275,33 @@ public class Peaklass extends Application {
 
         kulutus.setOnAction(event -> valiValdkond(primaryStage));
         ülevaade.setOnAction(event -> vaataÜlevaadet(primaryStage));
-//        lõpeta.setOnAction(event -> lõpetaTöö(primaryStage));
+        lõpeta.setOnAction(event -> {
+            try {
+                lõpetaTöö(primaryStage);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    private void lõpetaTöö(Stage primaryStage) throws IOException {
+        try(DataOutputStream dos =new DataOutputStream(new FileOutputStream("eelarve.dat"))){
+            dos.writeDouble(tulu);
+            dos.writeDouble(säästud);
+            for (Kulud kulud : kulutused) {
+                dos.writeUTF(kulud.getNimetus());
+                for (double arv : kulud.getKategooria()) {
+                    dos.writeDouble(arv);
+                }
+            }
+        }
+        Alert info = new Alert(Alert.AlertType.INFORMATION);
+        info.setHeaderText(null);
+        info.setTitle("");
+        info.setContentText("Andmed salvestatud faili eelarve.dat");
+        info.showAndWait();
+        primaryStage.close();
+
     }
 
     private void valiValdkond(Stage primaryStage) {
@@ -319,4 +401,5 @@ public class Peaklass extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
     }
+
 }

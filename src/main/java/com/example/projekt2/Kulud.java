@@ -7,6 +7,11 @@ public class Kulud {
     private double[] kategooria;
     private String nimetus;
 
+    public Kulud(double[] kategooria, String nimetus) {
+        this.kategooria = kategooria;
+        this.nimetus = nimetus;
+    }
+
     public Kulud(String nimetus) {
         kategooria = new double[3];
         this.nimetus = nimetus;
