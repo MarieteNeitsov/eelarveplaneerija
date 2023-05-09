@@ -1,12 +1,15 @@
 package com.example.projekt2;
 
 import javafx.application.Application;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
@@ -15,19 +18,22 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import javafx.stage.FileChooser;
+import javafx.util.Callback;
 
 public class Peaklass extends Application {
     static double tulu;
     static List<Kulud> kulutused;
-    static double säästud;
+    static double säästusumma;
 
     public static void main(String[] args) {
         launch(args);
     }
+
     @Override
-    public void start(Stage primaryStage){
-        VBox juur = new VBox( );
+    public void start(Stage primaryStage) {
+        VBox juur = new VBox();
         juur.setAlignment(Pos.CENTER);
         juur.setSpacing(20);
 
@@ -47,7 +53,7 @@ public class Peaklass extends Application {
         alustaUut.setOnAction(event -> alustus(primaryStage));
 
 
-        juur.getChildren().addAll(silt,valifailnupp,alustaUut);
+        juur.getChildren().addAll(silt, valifailnupp, alustaUut);
 
         Scene scene = new Scene(juur, 400, 300);
         primaryStage.setScene(scene);
@@ -64,20 +70,20 @@ public class Peaklass extends Application {
             // tuleb sisse lugeda
             try (DataInputStream dis = new DataInputStream(new FileInputStream(fail.getName()))) {
                 tulu = dis.readDouble();
-                säästud = dis.readDouble();
+                säästusumma = dis.readDouble();
                 for (int i = 0; i < 10; i++) {
                     String nimetus = dis.readUTF();
                     double[] kategooria = new double[3];
                     kategooria[0] = dis.readDouble();
                     kategooria[1] = dis.readDouble();
                     kategooria[2] = dis.readDouble();
-                    Kulud kulu = new Kulud(kategooria,nimetus);
+                    Kulud kulu = new Kulud(kategooria, nimetus);
                     loetudKulud.add(kulu);
                 }
                 kulutused = loetudKulud;
             }
-
         }
+        valiTegevus(primaryStage);
     }
 
     public void alustus(Stage primaryStage) {
@@ -149,7 +155,7 @@ public class Peaklass extends Application {
         juhuslikSummaNupp.setOnAction(event -> {
             Saastmine säästmine = new Saastmine(tulu);
             säästmineTekst.setText(String.valueOf(säästmine.säästa()));
-            säästud = Double.parseDouble(säästmineTekst.getText());
+            säästusumma = Double.parseDouble(säästmineTekst.getText());
         });
 
         edasiNupp.setOnAction(event -> planeeriEelarved(primaryStage));
@@ -159,7 +165,7 @@ public class Peaklass extends Application {
         primaryStage.setScene(stseen);
     }
 
-    private void planeeriEelarved(Stage primaryStage)  {
+    private void planeeriEelarved(Stage primaryStage) {
         //kulude isendid iga valdkonna eelarve jaoks
         Kulud üür = new Kulud("üür");
         Kulud kommunaalkulud = new Kulud("kommunaalkulud");
@@ -170,7 +176,8 @@ public class Peaklass extends Application {
         Kulud ilu_ja_tervis = new Kulud("ilu/tervis");
         Kulud muu = new Kulud("muu");
         Kulud kokku = new Kulud("kokku");
-        kulutused = new ArrayList<>(Arrays.asList(üür, kommunaalkulud, söök, transport, meelelahutus, riided_ja_jalatsid, ilu_ja_tervis, muu,kokku));
+        Kulud säästud = new Kulud("säästud");
+        kulutused = new ArrayList<>(Arrays.asList(üür, kommunaalkulud, söök, transport, meelelahutus, riided_ja_jalatsid, ilu_ja_tervis, muu, kokku, säästud));
 
         GridPane juur = new GridPane();
         juur.setAlignment(Pos.CENTER);
@@ -217,16 +224,15 @@ public class Peaklass extends Application {
         GridPane.setHalignment(kinnitaNupp, HPos.CENTER);
 
         kinnitaNupp.setOnAction(event -> {
-            int i = 0;
             double eelarvedKokku = 0;
+            double vahe = 0;
             try {
-                for (Kulud kulu : kulutused) {
-                    double eelarveSumma = kulu.lisaEelarve(tekstid.get(i));
+                for (int i = 0; i < kulutused.size() - 2; i++) {
+                    double eelarveSumma = kulutused.get(i).lisaEelarve(tekstid.get(i));
                     eelarvedKokku += eelarveSumma;
-                    i++;
                 }
-                kokku.lisaKokkuEelarve(eelarvedKokku, tulu - säästud);
-                double vahe = tulu - säästud - eelarvedKokku;
+                kokku.lisaKokkuEelarve(eelarvedKokku, tulu - säästusumma);
+                vahe = tulu - säästusumma - eelarvedKokku;
                 if (vahe > 0)
                     throw new EelarvetestJäiÜleErind("Sul jäi eelarvetest üle " + vahe + " eurot, summa lisatud säästudesse");
                 else if (vahe == 0)
@@ -237,7 +243,15 @@ public class Peaklass extends Application {
                 veahoiatus.setTitle("");
                 veahoiatus.setContentText(e.getMessage());
                 veahoiatus.showAndWait();
-            } catch (EelarvetestJäiÜleErind | KõikJagatudErind e) {
+            } catch (EelarvetestJäiÜleErind e) {
+                säästud.lisaKulu(vahe);
+                Alert info = new Alert(Alert.AlertType.INFORMATION);
+                info.setHeaderText(null);
+                info.setTitle("");
+                info.setContentText(e.getMessage());
+                info.showAndWait();
+                valiTegevus(primaryStage);
+            } catch (KõikJagatudErind e) {
                 Alert info = new Alert(Alert.AlertType.INFORMATION);
                 info.setHeaderText(null);
                 info.setTitle("");
@@ -245,14 +259,14 @@ public class Peaklass extends Application {
                 info.showAndWait();
                 valiTegevus(primaryStage);
             }
-           valiTegevus(primaryStage);
+            valiTegevus(primaryStage);
         });
 
         Scene scene = new Scene(juur, 400, 400);
         primaryStage.setScene(scene);
     }
 
-    private void valiTegevus(Stage primaryStage){
+    private void valiTegevus(Stage primaryStage) {
         BorderPane juur = new BorderPane();
         VBox vBox = new VBox();
         vBox.setAlignment(Pos.CENTER);
@@ -274,7 +288,7 @@ public class Peaklass extends Application {
         primaryStage.setScene(stseen);
 
         kulutus.setOnAction(event -> valiValdkond(primaryStage));
-        ülevaade.setOnAction(event -> vaataÜlevaadet(primaryStage));
+        ülevaade.setOnAction(event -> vaataÜlevaadet());
         lõpeta.setOnAction(event -> {
             try {
                 lõpetaTöö(primaryStage);
@@ -282,26 +296,6 @@ public class Peaklass extends Application {
                 throw new RuntimeException(e);
             }
         });
-    }
-
-    private void lõpetaTöö(Stage primaryStage) throws IOException {
-        try(DataOutputStream dos =new DataOutputStream(new FileOutputStream("eelarve.dat"))){
-            dos.writeDouble(tulu);
-            dos.writeDouble(säästud);
-            for (Kulud kulud : kulutused) {
-                dos.writeUTF(kulud.getNimetus());
-                for (double arv : kulud.getKategooria()) {
-                    dos.writeDouble(arv);
-                }
-            }
-        }
-        Alert info = new Alert(Alert.AlertType.INFORMATION);
-        info.setHeaderText(null);
-        info.setTitle("");
-        info.setContentText("Andmed salvestatud faili eelarve.dat");
-        info.showAndWait();
-        primaryStage.close();
-
     }
 
     private void valiValdkond(Stage primaryStage) {
@@ -320,7 +314,7 @@ public class Peaklass extends Application {
         Button ilu_ja_tervis = new Button("ilu/tervis");
         Button muu = new Button("muu");
 
-        HBox nupud = new HBox(üür,kommunaalkulud,söök,transport, meelelahutus, riided_ja_jalatsid, ilu_ja_tervis, muu);
+        HBox nupud = new HBox(üür, kommunaalkulud, söök, transport, meelelahutus, riided_ja_jalatsid, ilu_ja_tervis, muu);
         nupud.setAlignment(Pos.CENTER);
         nupud.setSpacing(10);
 
@@ -365,6 +359,9 @@ public class Peaklass extends Application {
 
         edasiNupp.setOnAction(event -> {
             valdkond.lisaKulu(Double.parseDouble(kuluTekst.getText()));
+            valdkond.protsent();
+            kulutused.get(8).lisaKulu(Double.parseDouble(kuluTekst.getText()));
+            kulutused.get(8).protsent();
             Alert info = new Alert(Alert.AlertType.INFORMATION);
             info.setHeaderText(null);
             info.setTitle("");
@@ -374,32 +371,62 @@ public class Peaklass extends Application {
         });
     }
 
-    private void vaataÜlevaadet(Stage primaryStage) {
+    private void vaataÜlevaadet() {
         VBox juur = new VBox();
-        TableView<Kulud> tableView = new TableView<>();
+        Object[][] andmed = new Object[11][4];
+        String[] pealkirjad = {"", "Planeeritud", "Tegelik kulu", "Protsent eelarvest"};
+        int j = 1;
+        for (int i = 0; i < kulutused.size(); i++) {
+            andmed[i][0] = kulutused.get(i).getNimetus();
+            for (double v : kulutused.get(i).getKategooria()) {
+                andmed[i][j] = v;
+                j++;
+            }
+            j = 1;
+        }
+        andmed[9] = new Object[]{"", "", "", ""};
+        andmed[10][0] = kulutused.get(9).getNimetus();
+        for (double v : kulutused.get(9).getKategooria()) {
+            andmed[10][j] = v;
+            j++;
+        }
 
-        TableColumn<Kulud, String> valdkonnad = new TableColumn<>();
-        TableColumn<Kulud, double[]> planeeritud = new TableColumn<>("Planeeritud");
-        TableColumn<Kulud, double[]> tegelik = new TableColumn<>("Tegelik kulu");
-        TableColumn<Kulud, double[]> protsent = new TableColumn<>("Protsent eelarvest");
+        ObservableList<Object[]> read = FXCollections.observableArrayList();
+        read.addAll(Arrays.asList(andmed));
+        TableView<Object[]> tabel = new TableView<>();
+        for (int i = 0; i < pealkirjad.length; i++) {
+            TableColumn<Object[], Object> veerg = new TableColumn<>(pealkirjad[i]);
+            final int veerunr = i;
+            veerg.setCellValueFactory(param -> new SimpleObjectProperty<>((param.getValue()[veerunr])));
+            tabel.getColumns().add(veerg);
+        }
 
-//        valdkonnad.setCellValueFactory(new PropertyValueFactory<>("nimetus"));
-//        planeeritud.setCellValueFactory(new PropertyValueFactory<>("kategooria[0]"));
-//        tegelik.setCellValueFactory(new PropertyValueFactory<>("kategooria[1]"));
-//        protsent.setCellValueFactory(new PropertyValueFactory<>("kategooria[2]"));
+        tabel.setItems(read);
 
-        tableView.getColumns().add(valdkonnad);
-        tableView.getColumns().add(planeeritud);
-        tableView.getColumns().add(tegelik);
-        tableView.getColumns().add(protsent);
+        juur.getChildren().add(tabel);
 
-//        tableView.getItems().addAll(kulutused.get(0), kulutused.get(1), kulutused.get(2), kulutused.get(3), kulutused.get(4), kulutused.get(5), kulutused.get(6), kulutused.get(7));
-
-        juur.getChildren().add(tableView);
-
-        Scene scene = new Scene(juur, 400, 250);
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        Stage stage = new Stage();
+        Scene scene = new Scene(juur, 400, 300);
+        stage.setScene(scene);
+        stage.setOnCloseRequest(event -> stage.close());
+        stage.show();
     }
 
+    private void lõpetaTöö(Stage primaryStage) throws IOException {
+        try (DataOutputStream dos = new DataOutputStream(new FileOutputStream("eelarve.dat"))) {
+            dos.writeDouble(tulu);
+            dos.writeDouble(säästusumma);
+            for (Kulud kulud : kulutused) {
+                dos.writeUTF(kulud.getNimetus());
+                for (double arv : kulud.getKategooria())
+                    dos.writeDouble(arv);
+            }
+        }
+        Alert info = new Alert(Alert.AlertType.INFORMATION);
+        info.setHeaderText(null);
+        info.setTitle("");
+        info.setContentText("Andmed salvestatud faili eelarve.dat");
+        info.showAndWait();
+        primaryStage.close();
+    }
 }
