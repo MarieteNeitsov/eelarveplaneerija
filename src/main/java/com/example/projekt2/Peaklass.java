@@ -51,7 +51,7 @@ public class Peaklass extends Application {
         Label silt = new Label("Mingi programmi tutvustav tekst");
         Button valifailnupp = new Button("Vali DAT fail, et jätkata kulutuste lisamist");
         valifailnupp.setOnAction(event -> {
-            //pole vist koige parem lahendus, aga teisiti vist ei saa praegu
+
             try {
                 valiFail(primaryStage);
             } catch (IOException e) {
@@ -116,10 +116,11 @@ public class Peaklass extends Application {
         HBox.setHgrow(tekst, Priority.ALWAYS);
 
         edasiNupp.setOnAction(event -> {
-            String tuluTekst = tekst.getText();
+            //String tuluTekst = tekst.getText();
             try {
-                tulu = Double.parseDouble(tuluTekst);
-                if (tulu < 0.0) throw new NumberFormatException();
+                tulu = tekstikastiVäärtus(tekst);
+                /*tulu = Double.parseDouble(tuluTekst);
+                if (tulu < 0.0) throw new NumberFormatException();*/
                 planeeriSäästmine(primaryStage);
             } catch (NumberFormatException e) {
                 tekst.clear();
@@ -174,14 +175,15 @@ public class Peaklass extends Application {
 
         edasiNupp.setOnAction(event -> {
             try {
-                String sisestus = säästmineTekst.getText();
-                if (sisestus.equals(""))
+                //String sisestus = säästmineTekst.getText();
+                säästusumma = tekstikastiVäärtus(säästmineTekst);
+                /*if (sisestus.equals(""))
                     säästud.lisaEelarve(0);
                 else {
                     säästusumma = Double.parseDouble(sisestus);
                     säästud.lisaEelarve(säästusumma);
                     if (säästusumma < 0) throw new NumberFormatException("negatiivne arv");
-                }
+                }*/
                 planeeriEelarved(primaryStage);
             } catch (NumberFormatException e) {
                 säästmineTekst.clear();
