@@ -50,6 +50,8 @@ public class Peaklass extends Application {
 
         Label silt = new Label("Mingi programmi tutvustav tekst");
         Button valifailnupp = new Button("Vali DAT fail, et jätkata kulutuste lisamist");
+
+
         valifailnupp.setOnAction(event -> {
 
             try {
@@ -61,10 +63,12 @@ public class Peaklass extends Application {
         });
 
         Button alustaUut = new Button("Alusta uut sessiooni");
+
         alustaUut.setOnAction(event -> alustus(primaryStage));
 
 
         juur.getChildren().addAll(silt, valifailnupp, alustaUut);
+        juur.setStyle("-fx-font-family: 'Helvetica'; -fx-font-size: 14px; -fx-font-weight: bold;");
 
         Scene scene = new Scene(juur, 400, 300);
         primaryStage.setScene(scene);
@@ -129,8 +133,10 @@ public class Peaklass extends Application {
         });
 
         juur.setCenter(hBox);
+        juur.setStyle("-fx-font-family: 'Helvetica'; -fx-font-size: 14px; -fx-font-weight: bold;");
 
         Scene stseen = new Scene(juur, 400, 300);
+
         primaryStage.setScene(stseen);
         primaryStage.show();
     }
@@ -146,6 +152,8 @@ public class Peaklass extends Application {
         hBox.setPadding(new Insets(10));
 
         Label säästmineSilt = new Label("Kui soovid sellel kuul säästa, siis sisesta summa või lase genereerida juhuslik säästusumma");
+
+
         säästmineSilt.setWrapText(true);
         säästmineSilt.setTextAlignment(TextAlignment.CENTER);
         TextField säästmineTekst = new TextField();
@@ -156,6 +164,7 @@ public class Peaklass extends Application {
         HBox nupud = new HBox(juhuslikSummaNupp, edasiNupp);
         nupud.setAlignment(Pos.CENTER);
         nupud.setSpacing(10);
+
 
         vBox.getChildren().addAll(säästmineSilt, säästmineTekst, nupud);
         hBox.getChildren().addAll(vBox);
@@ -189,6 +198,7 @@ public class Peaklass extends Application {
         });
 
         juur.setCenter(hBox);
+        juur.setStyle("-fx-font-family: 'Helvetica'; -fx-font-size: 14px; -fx-font-weight: bold;");
         Scene stseen = new Scene(juur, 400, 300);
         primaryStage.setScene(stseen);
     }
@@ -207,6 +217,7 @@ public class Peaklass extends Application {
         kulutused = new ArrayList<>(Arrays.asList(üür, kommunaalid, söök, transport, meelelahutus, riided_ja_jalatsid, ilu_ja_tervis, muu, kokku, säästud));
 
         VBox juur = new VBox();
+        juur.setStyle("-fx-font-family: 'Helvetica'; -fx-font-size: 14px; -fx-font-weight: bold;");
         juur.setAlignment(Pos.CENTER);
         juur.setSpacing(10);
 
@@ -264,14 +275,10 @@ public class Peaklass extends Application {
             try {
                 for (int i = 0; i < kulutused.size() - 2; i++) {
                     tekstikast = tekstid.get(i);
-                    //String sisestus = tekstid.get(i).getText();
-                    /*if (sisestus.equals(""))
-                        kulutused.get(i).lisaEelarve(0);
-                    else {*/
                         double eelarveSumma = kulutused.get(i).lisaEelarve(tekstikastiVäärtus(tekstid.get(i)));
                         andmed[i][1] = eelarveSumma;
                         eelarvedKokku += eelarveSumma;
-                    //}
+
                 }
                 andmed[8][1] = kokku.lisaKokkuEelarve(eelarvedKokku, tulu - säästusumma);
                 vahe = tulu - säästusumma - eelarvedKokku;
@@ -331,6 +338,7 @@ public class Peaklass extends Application {
         vBox.getChildren().addAll(tegevusSilt, nupud);
 
         juur.setCenter(vBox);
+        juur.setStyle("-fx-font-family: 'Helvetica'; -fx-font-size: 14px; -fx-font-weight: bold;");
         Scene stseen = new Scene(juur, 400, 300);
         primaryStage.setScene(stseen);
 
@@ -368,6 +376,7 @@ public class Peaklass extends Application {
         vBox.getChildren().addAll(valdkondSilt, nupud);
 
         juur.setCenter(vBox);
+        juur.setStyle("-fx-font-family: 'Helvetica'; -fx-font-size: 14px; -fx-font-weight: bold;");
         Scene stseen = new Scene(juur, 700, 300);
         primaryStage.setScene(stseen);
 
@@ -401,11 +410,11 @@ public class Peaklass extends Application {
         HBox.setHgrow(kuluTekst, Priority.ALWAYS);
 
         juur.setCenter(hBox);
+        juur.setStyle("-fx-font-family: 'Helvetica'; -fx-font-size: 14px; -fx-font-weight: bold;");
         Scene stseen = new Scene(juur, 400, 300);
         primaryStage.setScene(stseen);
 
         edasiNupp.setOnAction(event -> {
-            //andmed[indeks][2] = valdkond.lisaKulu(Double.parseDouble(kuluTekst.getText()));
            try{
             andmed[indeks][2] = valdkond.lisaKulu(tekstikastiVäärtus(kuluTekst));
             if (valdkond.protsent() < 0)
@@ -448,6 +457,7 @@ public class Peaklass extends Application {
         tabel.setItems(read);
 
         juur.getChildren().add(tabel);
+        juur.setStyle("-fx-font-family: 'Helvetica'; -fx-font-size: 14px; -fx-font-weight: bold;");
 
         Stage stage = new Stage();
         Scene scene = new Scene(juur, 430, 300);
