@@ -260,16 +260,18 @@ public class Peaklass extends Application {
         kinnitaNupp.setOnAction(event -> {
             double eelarvedKokku = 0;
             double vahe = 0;
+            TextField tekstikast = tekstid.get(0);
             try {
                 for (int i = 0; i < kulutused.size() - 2; i++) {
-                    String sisestus = tekstid.get(i).getText();
-                    if (sisestus.equals(""))
+                    tekstikast = tekstid.get(i);
+                    //String sisestus = tekstid.get(i).getText();
+                    /*if (sisestus.equals(""))
                         kulutused.get(i).lisaEelarve(0);
-                    else {
-                        double eelarveSumma = kulutused.get(i).lisaEelarve(Double.parseDouble(sisestus));
+                    else {*/
+                        double eelarveSumma = kulutused.get(i).lisaEelarve(tekstikastiVäärtus(tekstid.get(i)));
                         andmed[i][1] = eelarveSumma;
                         eelarvedKokku += eelarveSumma;
-                    }
+                    //}
                 }
                 andmed[8][1] = kokku.lisaKokkuEelarve(eelarvedKokku, tulu - säästusumma);
                 vahe = tulu - säästusumma - eelarvedKokku;
@@ -277,7 +279,9 @@ public class Peaklass extends Application {
                     throw new EelarvetestJäiÜleErind("Sul jäi eelarvetest üle " + vahe + " eurot, summa lisatud säästudesse");
                 else if (vahe == 0)
                     throw new KõikJagatudErind("Kogu sissetulek edukalt eelarvete vahel ära jaotatud");
-            } catch (EelarvedÜletavadTuluErind e) {
+            } catch (NumberFormatException e){
+                tekstikast.clear();
+            }catch (EelarvedÜletavadTuluErind e) {
                 Alert veahoiatus = new Alert(Alert.AlertType.ERROR);
                 veahoiatus.setHeaderText(null);
                 veahoiatus.setTitle("");
@@ -401,7 +405,9 @@ public class Peaklass extends Application {
         primaryStage.setScene(stseen);
 
         edasiNupp.setOnAction(event -> {
-            andmed[indeks][2] = valdkond.lisaKulu(Double.parseDouble(kuluTekst.getText()));
+            //andmed[indeks][2] = valdkond.lisaKulu(Double.parseDouble(kuluTekst.getText()));
+           try{
+            andmed[indeks][2] = valdkond.lisaKulu(tekstikastiVäärtus(kuluTekst));
             if (valdkond.protsent() < 0)
                 andmed[indeks][3] = "Eelarve puudub!";
             else
@@ -415,9 +421,12 @@ public class Peaklass extends Application {
                 info.setContentText("Summa valdkonna " + "\"" + valdkond.getNimetus() + "\"" + " kuludesse lisatud");
                 info.showAndWait();
             }
-            andmed[8][2] = kulutused.get(8).lisaKulu(Double.parseDouble(kuluTekst.getText()));
+            andmed[8][2] = kulutused.get(8).lisaKulu(tekstikastiVäärtus(kuluTekst));
             andmed[8][3] = kulutused.get(8).protsent();
             valiTegevus(primaryStage);
+           }catch (NumberFormatException e){
+               kuluTekst.clear();
+           }
         });
     }
 
@@ -463,5 +472,16 @@ public class Peaklass extends Application {
         info.setContentText("Andmed salvestatud faili eelarve.dat");
         info.showAndWait();
         primaryStage.close();
+    }
+
+    private double tekstikastiVäärtus(TextField textField) {
+        String tekst = textField.getText();
+        if (tekst.trim().isEmpty()) {
+            return 0;
+        } else {
+            double summa = Double.parseDouble(tekst);
+            if(summa < 0) throw new NumberFormatException("negatiivne arv");
+            return summa;
+        }
     }
 }
