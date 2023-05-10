@@ -1,6 +1,6 @@
 package com.example.projekt2;
 
-import javafx.scene.control.TextField;
+import javafx.scene.control.Alert;
 
 public class Kulud {
 
@@ -25,14 +25,12 @@ public class Kulud {
         return nimetus;
     }
 
-    public double lisaEelarve(TextField tekstikast) {
+    public double lisaEelarve(double summa) {
         // vb oleks parem kui olekd mingi üldisem meetod kasutaja sisestuse kontrollimiseks, sest kulutustel tuleks see sama läbi teha
-        String tekst = tekstikast.getText();
-        if (tekst.isEmpty()) {
+        if (summa == 0) {
             kategooria[0] = 0;
         } else {
             try {
-                double summa =  Double.parseDouble(tekst);
                 if(summa < 0.0) throw new NumberFormatException();
                 kategooria[0] = summa;
             } catch (NumberFormatException e) {
@@ -59,10 +57,19 @@ public class Kulud {
     }
 
     public void ülePiiri() {
-        if (kategooria[2] > 75 && kategooria[2] < 100)
-            System.out.println("Oled kulutanud üle 75% selle kategooria eelarvest. Piira oma edasisi kulutusi!");
+        if (kategooria[2] > 75 && kategooria[2] < 100) {
+            Alert info = new Alert(Alert.AlertType.WARNING);
+            info.setHeaderText(null);
+            info.setTitle("");
+            info.setContentText("Oled kulutanud üle 75% selle kategooria eelarvest. Piira oma edasisi kulutusi!");
+            info.showAndWait();
+        }
         else if (kategooria[2] > 100) {
-            System.out.println("Oled ületanud eelarve " + nimetus + " " + (kategooria[2] - kategooria[1]) + " euro võrra!");
+            Alert info = new Alert(Alert.AlertType.WARNING);
+            info.setHeaderText(null);
+            info.setTitle("");
+            info.setContentText("Oled ületanud kategooria \"" + nimetus + "\" eelarve " + (kategooria[1] - kategooria[0]) + " euro võrra!");
+            info.showAndWait();
         }
     }
 }
