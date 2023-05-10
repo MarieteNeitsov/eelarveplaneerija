@@ -164,7 +164,9 @@ public class Peaklass extends Application {
         juhuslikSummaNupp.setOnAction(event -> {
             Saastmine säästmine = new Saastmine(tulu);
             säästusumma = säästmine.säästa();
-            säästud.lisaEelarve(säästusumma);
+            andmed[10][1] = säästud.lisaEelarve(säästusumma);
+            andmed[10][2] = säästud.lisaKulu(säästusumma);
+            andmed[10][3] = säästud.protsent();
             Alert info = new Alert(Alert.AlertType.INFORMATION);
             info.setHeaderText(null);
             info.setTitle("");
@@ -175,15 +177,11 @@ public class Peaklass extends Application {
 
         edasiNupp.setOnAction(event -> {
             try {
-                //String sisestus = säästmineTekst.getText();
                 säästusumma = tekstikastiVäärtus(säästmineTekst);
-                /*if (sisestus.equals(""))
-                    säästud.lisaEelarve(0);
-                else {
-                    säästusumma = Double.parseDouble(sisestus);
-                    säästud.lisaEelarve(säästusumma);
-                    if (säästusumma < 0) throw new NumberFormatException("negatiivne arv");
-                }*/
+                if (säästusumma == 0)
+                    andmed[10][1] = säästud.lisaEelarve(0);
+                else
+                    andmed[10][1] = säästud.lisaEelarve(säästusumma);
                 planeeriEelarved(primaryStage);
             } catch (NumberFormatException e) {
                 säästmineTekst.clear();
