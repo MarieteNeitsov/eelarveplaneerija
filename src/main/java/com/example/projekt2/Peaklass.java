@@ -48,13 +48,14 @@ public class Peaklass extends Application {
     public void start(Stage primaryStage) {
         VBox juur = new VBox();
         juur.setAlignment(Pos.CENTER);
-        juur.setSpacing(20);
+        juur.setSpacing(30);
         juur.setBackground(Background.fill(Color.LIGHTBLUE));
 
-        Label silt = new Label("Mingi programmi tutvustav tekst");
-        silt.setFont(Font.font ("Verdana", 16));
+        Label silt = new Label("Eelarve planeerija");
+        silt.setFont(Font.font ("Verdana", 18));
         Button valifailnupp = new Button("Vali DAT fail, et jätkata kulutuste lisamist");
         valifailnupp.setBackground(Background.fill(Color.ALICEBLUE));
+        valifailnupp.setPrefWidth(370);
         valifailnupp.setFont(Font.font ("Verdana", 14));
         valifailnupp.setOnAction(event -> {
 
@@ -67,6 +68,7 @@ public class Peaklass extends Application {
         });
 
         Button alustaUut = new Button("Alusta uut sessiooni");
+        alustaUut.setPrefWidth(370);
         alustaUut.setBackground(Background.fill(Color.ALICEBLUE));
         alustaUut.setFont(Font.font ("Verdana", 14));
         alustaUut.setOnAction(event -> alustus(primaryStage));
