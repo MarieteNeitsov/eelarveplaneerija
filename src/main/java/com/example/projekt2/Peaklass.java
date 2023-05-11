@@ -52,12 +52,12 @@ public class Peaklass extends Application {
         juur.setBackground(Background.fill(Color.LIGHTBLUE));
 
         Label silt = new Label("Eelarve planeerija");
-        silt.setFont(Font.font ("Verdana", 18));
+        silt.setFont(Font.font("Verdana", 18));
 
         Button valifailnupp = new Button("Vali DAT fail, et jätkata kulutuste lisamist");
         valifailnupp.setBackground(Background.fill(Color.ALICEBLUE));
         valifailnupp.setPrefWidth(370);
-        valifailnupp.setFont(Font.font ("Verdana", 14));
+        valifailnupp.setFont(Font.font("Verdana", 14));
         valifailnupp.setOnAction(event -> {
 
             try {
@@ -71,7 +71,7 @@ public class Peaklass extends Application {
         Button alustaUut = new Button("Alusta uut sessiooni");
         alustaUut.setPrefWidth(370);
         alustaUut.setBackground(Background.fill(Color.ALICEBLUE));
-        alustaUut.setFont(Font.font ("Verdana", 14));
+        alustaUut.setFont(Font.font("Verdana", 14));
         alustaUut.setOnAction(event -> alustus(primaryStage));
 
         juur.getChildren().addAll(silt, valifailnupp, alustaUut);
@@ -120,13 +120,13 @@ public class Peaklass extends Application {
         hBox.setPadding(new Insets(10));
 
         Label tuluSilt = new Label("Sisesta oma selle kuu tulu (€):");
-        tuluSilt.setFont(Font.font ("Verdana", 16));
+        tuluSilt.setFont(Font.font("Verdana", 16));
         TextField tekst = new TextField();
         tekst.setPrefWidth(400);
 
         Button edasiNupp = new Button("Edasi");
         edasiNupp.setBackground(Background.fill(Color.ALICEBLUE));
-        edasiNupp.setFont(Font.font ("Verdana", 14));
+        edasiNupp.setFont(Font.font("Verdana", 14));
 
         vBox.getChildren().addAll(tuluSilt, tekst, edasiNupp);
         hBox.getChildren().add(vBox);
@@ -165,15 +165,15 @@ public class Peaklass extends Application {
         Label säästmineSilt = new Label("Kui soovid sellel kuul säästa, siis sisesta summa või lase genereerida juhuslik säästusumma");
         säästmineSilt.setWrapText(true);
         säästmineSilt.setTextAlignment(TextAlignment.CENTER);
-        säästmineSilt.setFont(Font.font ("Verdana", 16));
+        säästmineSilt.setFont(Font.font("Verdana", 16));
         TextField säästmineTekst = new TextField();
         säästmineTekst.setPrefWidth(400);
         Button juhuslikSummaNupp = new Button("Genereeri juhuslik summa");
         juhuslikSummaNupp.setBackground(Background.fill(Color.ALICEBLUE));
-        juhuslikSummaNupp.setFont(Font.font ("Verdana", 14));
+        juhuslikSummaNupp.setFont(Font.font("Verdana", 14));
         Button edasiNupp = new Button("Edasi");
         edasiNupp.setBackground(Background.fill(Color.ALICEBLUE));
-        edasiNupp.setFont(Font.font ("Verdana", 14));
+        edasiNupp.setFont(Font.font("Verdana", 14));
 
         HBox nupud = new HBox(juhuslikSummaNupp, edasiNupp);
         nupud.setAlignment(Pos.CENTER);
@@ -241,34 +241,34 @@ public class Peaklass extends Application {
         gp.setPadding(new Insets(10));
 
         Label tekst = new Label("Sisesta valdkondadele soovitud eelarved: ");
-        tekst.setFont(Font.font ("Verdana", 14));
+        tekst.setFont(Font.font("Verdana", 14));
         Label üürSilt = new Label("Üür:");
-        üürSilt.setFont(Font.font ("Verdana", 14));
+        üürSilt.setFont(Font.font("Verdana", 14));
         TextField üürTekst = new TextField();
         Label kommunaalidSilt = new Label("Kommunaalid:");
-        kommunaalidSilt.setFont(Font.font ("Verdana", 14));
+        kommunaalidSilt.setFont(Font.font("Verdana", 14));
         TextField kommunaalidTekst = new TextField();
         Label söökSilt = new Label("Söök:");
-        söökSilt.setFont(Font.font ("Verdana", 14));
+        söökSilt.setFont(Font.font("Verdana", 14));
         TextField söökTekst = new TextField();
         Label transportSilt = new Label("Transport");
-        transportSilt.setFont(Font.font ("Verdana", 14));
+        transportSilt.setFont(Font.font("Verdana", 14));
         TextField transportTekst = new TextField();
         Label meelelahtusSilt = new Label("Meelelahutus:");
-        meelelahtusSilt.setFont(Font.font ("Verdana", 14));
+        meelelahtusSilt.setFont(Font.font("Verdana", 14));
         TextField meelelahutusTekst = new TextField();
         Label riided_jalatsidSilt = new Label("Riided/jalatsid:");
-        riided_jalatsidSilt.setFont(Font.font ("Verdana", 14));
+        riided_jalatsidSilt.setFont(Font.font("Verdana", 14));
         TextField riided_jalatsidTekst = new TextField();
         Label ilu_tervisSilt = new Label("Ilu/tervis:");
-        ilu_tervisSilt.setFont(Font.font ("Verdana", 14));
+        ilu_tervisSilt.setFont(Font.font("Verdana", 14));
         TextField ilu_tervisTekst = new TextField();
         Label muuSilt = new Label("Muu:");
-        muuSilt.setFont(Font.font ("Verdana", 14));
+        muuSilt.setFont(Font.font("Verdana", 14));
         TextField muuTekst = new TextField();
         Button kinnitaNupp = new Button("Kinnita");
         kinnitaNupp.setBackground(Background.fill(Color.ALICEBLUE));
-        kinnitaNupp.setFont(Font.font ("Verdana", 14));
+        kinnitaNupp.setFont(Font.font("Verdana", 14));
         List<TextField> tekstid = new ArrayList<>(Arrays.asList(üürTekst, kommunaalidTekst, söökTekst, transportTekst, meelelahutusTekst, riided_jalatsidTekst, ilu_tervisTekst, muuTekst));
 
         gp.add(üürSilt, 0, 0);
@@ -287,7 +287,6 @@ public class Peaklass extends Application {
         gp.add(ilu_tervisTekst, 1, 6);
         gp.add(muuSilt, 0, 7);
         gp.add(muuTekst, 1, 7);
-        //gp.add(kinnitaNupp, 0, 8, 2, 1);
         GridPane.setHalignment(kinnitaNupp, HPos.CENTER);
 
         juur.getChildren().addAll(tekst, gp, kinnitaNupp);
@@ -352,16 +351,16 @@ public class Peaklass extends Application {
         vBox.setSpacing(20);
 
         Label tegevusSilt = new Label("Vali tegevus:");
-        tegevusSilt.setFont(Font.font ("Verdana", 16));
+        tegevusSilt.setFont(Font.font("Verdana", 16));
         Button kulutus = new Button("Lisa kulutus");
         kulutus.setBackground(Background.fill(Color.ALICEBLUE));
-        kulutus.setFont(Font.font ("Verdana", 14));
+        kulutus.setFont(Font.font("Verdana", 14));
         Button ülevaade = new Button("Vaata ülevaadet");
         ülevaade.setBackground(Background.fill(Color.ALICEBLUE));
-        ülevaade.setFont(Font.font ("Verdana", 14));
+        ülevaade.setFont(Font.font("Verdana", 14));
         Button lõpeta = new Button("Lõpeta");
         lõpeta.setBackground(Background.fill(Color.ALICEBLUE));
-        lõpeta.setFont(Font.font ("Verdana", 14));
+        lõpeta.setFont(Font.font("Verdana", 14));
 
         HBox nupud = new HBox(kulutus, ülevaade, lõpeta);
         nupud.setAlignment(Pos.CENTER);
@@ -394,31 +393,31 @@ public class Peaklass extends Application {
         vBox.setSpacing(20);
 
         Label valdkondSilt = new Label("Vali valdkond:");
-        valdkondSilt.setFont(Font.font ("Verdana", 16));
+        valdkondSilt.setFont(Font.font("Verdana", 16));
         Button üür = new Button("üür");
         üür.setBackground(Background.fill(Color.ALICEBLUE));
-        üür.setFont(Font.font ("Verdana", 14));
+        üür.setFont(Font.font("Verdana", 14));
         Button kommunaalid = new Button("kommunaalid");
         kommunaalid.setBackground(Background.fill(Color.ALICEBLUE));
-        kommunaalid.setFont(Font.font ("Verdana", 14));
+        kommunaalid.setFont(Font.font("Verdana", 14));
         Button söök = new Button("söök");
         söök.setBackground(Background.fill(Color.ALICEBLUE));
-        söök.setFont(Font.font ("Verdana", 14));
+        söök.setFont(Font.font("Verdana", 14));
         Button transport = new Button("transport");
         transport.setBackground(Background.fill(Color.ALICEBLUE));
-        transport.setFont(Font.font ("Verdana", 14));
+        transport.setFont(Font.font("Verdana", 14));
         Button meelelahutus = new Button("meelelahutus");
         meelelahutus.setBackground(Background.fill(Color.ALICEBLUE));
-        meelelahutus.setFont(Font.font ("Verdana", 14));
+        meelelahutus.setFont(Font.font("Verdana", 14));
         Button riided_ja_jalatsid = new Button("riided/jalatsid");
         riided_ja_jalatsid.setBackground(Background.fill(Color.ALICEBLUE));
-        riided_ja_jalatsid.setFont(Font.font ("Verdana", 14));
+        riided_ja_jalatsid.setFont(Font.font("Verdana", 14));
         Button ilu_ja_tervis = new Button("ilu/tervis");
         ilu_ja_tervis.setBackground(Background.fill(Color.ALICEBLUE));
-        ilu_ja_tervis.setFont(Font.font ("Verdana", 14));
+        ilu_ja_tervis.setFont(Font.font("Verdana", 14));
         Button muu = new Button("muu");
         muu.setBackground(Background.fill(Color.ALICEBLUE));
-        muu.setFont(Font.font ("Verdana", 14));
+        muu.setFont(Font.font("Verdana", 14));
 
         HBox nupud = new HBox(üür, kommunaalid, söök, transport, meelelahutus, riided_ja_jalatsid, ilu_ja_tervis, muu);
         nupud.setAlignment(Pos.CENTER);
@@ -454,12 +453,12 @@ public class Peaklass extends Application {
         hBox.setPadding(new Insets(10));
 
         Label kuluSilt = new Label("Sisesta summa, mis selles valdkonnas kulutasid:");
-        kuluSilt.setFont(Font.font ("Verdana", 16));
+        kuluSilt.setFont(Font.font("Verdana", 16));
         TextField kuluTekst = new TextField();
         kuluTekst.setPrefWidth(400);
         Button edasiNupp = new Button("Edasi");
         edasiNupp.setBackground(Background.fill(Color.ALICEBLUE));
-        edasiNupp.setFont(Font.font ("Verdana", 14));
+        edasiNupp.setFont(Font.font("Verdana", 14));
 
         vBox.getChildren().addAll(kuluSilt, kuluTekst, edasiNupp);
         hBox.getChildren().add(vBox);
@@ -474,10 +473,14 @@ public class Peaklass extends Application {
 
             try {
                 andmed[indeks][2] = valdkond.lisaKulu(tekstikastiVäärtus(kuluTekst));
+
+                // selleks, et sisestamata eelarve puhul ei näitaks protsendi all mittemidagiütlevat -1, siis asendab selle vastava infoga
                 if (valdkond.protsent() < 0)
                     andmed[indeks][3] = "Eelarve puudub!";
                 else
                     andmed[indeks][3] = valdkond.protsent();
+
+                // alates meelelahutuse kategooriast kontrollib, kas kulud hakkavad eelarvet ületama
                 if (!Objects.equals(valdkond.getNimetus(), "üür") || !Objects.equals(valdkond.getNimetus(), "kommunaalid") || !Objects.equals(valdkond.getNimetus(), "söök") || !Objects.equals(valdkond.getNimetus(), "transport"))
                     valdkond.ülePiiri();
                 else {
@@ -487,8 +490,14 @@ public class Peaklass extends Application {
                     info.setContentText("Summa valdkonna " + "\"" + valdkond.getNimetus() + "\"" + " kuludesse lisatud");
                     info.showAndWait();
                 }
+
                 andmed[8][2] = kulutused.get(8).lisaKulu(tekstikastiVäärtus(kuluTekst));
-                andmed[8][3] = kulutused.get(8).protsent();
+
+                if (kulutused.get(8).protsent() < 0)
+                    andmed[8][3] = "Eelarve puudub!";
+                else
+                    andmed[8][3] = kulutused.get(8).protsent();
+
                 valiTegevus(primaryStage);
             } catch (NumberFormatException e) {
                 kuluTekst.clear();
@@ -507,6 +516,7 @@ public class Peaklass extends Application {
         ObservableList<Object[]> read = FXCollections.observableArrayList();
         read.addAll(Arrays.asList(andmed));
         TableView<Object[]> tabel = new TableView<>();
+        //loob igal läbimisel ühe veeru ja lisab veeru igasse lahtrisse "read" listist vastava väärtuse
         for (int i = 0; i < pealkirjad.length; i++) {
             TableColumn<Object[], Object> veerg = new TableColumn<>(pealkirjad[i]);
             veerg.prefWidthProperty().bind(tabel.widthProperty().multiply(0.24));
@@ -544,7 +554,8 @@ public class Peaklass extends Application {
         info.showAndWait();
         primaryStage.close();
     }
-//meetod, mis kontrollib sisestuse korrektsust
+
+    //meetod, mis kontrollib sisestuse korrektsust
     private double tekstikastiVäärtus(TextField textField) {
         String tekst = textField.getText();
         if (tekst.trim().isEmpty()) {
