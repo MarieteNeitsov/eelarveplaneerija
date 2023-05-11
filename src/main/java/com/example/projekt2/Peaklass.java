@@ -53,6 +53,7 @@ public class Peaklass extends Application {
 
         Label silt = new Label("Eelarve planeerija");
         silt.setFont(Font.font ("Verdana", 18));
+
         Button valifailnupp = new Button("Vali DAT fail, et jätkata kulutuste lisamist");
         valifailnupp.setBackground(Background.fill(Color.ALICEBLUE));
         valifailnupp.setPrefWidth(370);
@@ -81,6 +82,7 @@ public class Peaklass extends Application {
     }
 
     private void valiFail(Stage primaryStage) throws IOException {
+        //laseme kasuatajal valida dat faili, kus on eelmise korra kasutamise ajal tekkinud andmed
         List<Kulud> loetudKulud = new ArrayList<>();
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("DAT Files", "*.dat"));
@@ -121,6 +123,7 @@ public class Peaklass extends Application {
         tuluSilt.setFont(Font.font ("Verdana", 16));
         TextField tekst = new TextField();
         tekst.setPrefWidth(400);
+
         Button edasiNupp = new Button("Edasi");
         edasiNupp.setBackground(Background.fill(Color.ALICEBLUE));
         edasiNupp.setFont(Font.font ("Verdana", 14));
@@ -130,10 +133,8 @@ public class Peaklass extends Application {
         HBox.setHgrow(tekst, Priority.ALWAYS);
 
         edasiNupp.setOnAction(event -> {
-            //String tuluTekst = tekst.getText();
             try {
                 tulu = tekstikastiVäärtus(tekst);
-                //tulu = Double.parseDouble(tuluTekst);
                 if (tulu == 0) throw new NumberFormatException();
                 planeeriSäästmine(primaryStage);
             } catch (NumberFormatException e) {
@@ -297,15 +298,10 @@ public class Peaklass extends Application {
             TextField tekstikast = tekstid.get(0);
             try {
                 for (int i = 0; i < kulutused.size() - 2; i++) {
-                    tekstikast = tekstid.get(i);
-                    //String sisestus = tekstid.get(i).getText();
-                    /*if (sisestus.equals(""))
-                        kulutused.get(i).lisaEelarve(0);
-                    else {*/
+                    //proovime iga tekstikasti sisestuse muuta eelarve summaks
                     double eelarveSumma = kulutused.get(i).lisaEelarve(tekstikastiVäärtus(tekstid.get(i)));
                     andmed[i][1] = eelarveSumma;
                     eelarvedKokku += eelarveSumma;
-                    //}
                 }
                 andmed[8][1] = kokku.lisaKokkuEelarve(eelarvedKokku, tulu - säästusumma);
                 vahe = tulu - säästusumma - eelarvedKokku;
@@ -475,7 +471,7 @@ public class Peaklass extends Application {
         primaryStage.setScene(stseen);
 
         edasiNupp.setOnAction(event -> {
-            //andmed[indeks][2] = valdkond.lisaKulu(Double.parseDouble(kuluTekst.getText()));
+
             try {
                 andmed[indeks][2] = valdkond.lisaKulu(tekstikastiVäärtus(kuluTekst));
                 if (valdkond.protsent() < 0)
@@ -531,6 +527,7 @@ public class Peaklass extends Application {
     }
 
     private void lõpetaTöö(Stage primaryStage) throws IOException {
+        //salvestame kõik andmed faili
         try (DataOutputStream dos = new DataOutputStream(new FileOutputStream("eelarve.dat"))) {
             dos.writeDouble(tulu);
             dos.writeDouble(säästusumma);
@@ -547,7 +544,7 @@ public class Peaklass extends Application {
         info.showAndWait();
         primaryStage.close();
     }
-
+//meetod, mis kontrollib sisestuse korrektsust
     private double tekstikastiVäärtus(TextField textField) {
         String tekst = textField.getText();
         if (tekst.trim().isEmpty()) {

@@ -26,17 +26,7 @@ public class Kulud {
     }
 
     public double lisaEelarve(double summa) {
-        // vb oleks parem kui olekd mingi üldisem meetod kasutaja sisestuse kontrollimiseks, sest kulutustel tuleks see sama läbi teha
-        /*if (summa == 0) {
-            kategooria[0] = 0;
-        } else {
-            try {
-                if(summa < 0.0) throw new NumberFormatException();
-                //
-            } catch (NumberFormatException e) {
-                // vaja midagi välja mõelda
-            }
-        }*/kategooria[0] = summa;
+        kategooria[0] = summa;
         return kategooria[0];
     }
 
